@@ -1,0 +1,46 @@
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+body {
+  padding: 5%;
+  font-family: "Helvetica", sans-serif;
+  font-size: 1em;
+  color: rgba(96, 96, 96, 1);
+}
+
+col {
+  height: 100%;
+}
+
+/* container-fluis {
+  height: 100%;
+} */
+
+#heading {
+  width: 100%;
+  margin: auto;
+}
+.btn-sml {
+  white-space: normal;
+  word-wrap: break-word;
+}
+h1 {
+  display: inline;
+  position: relative;
+  font: bold 330%/100% "Lucida Grande";
+  /* font-weight: bold; */
+  letter-spacing: -2px;
+  color: rgba(160, 160, 160, 1);
+  text-align: center;
+  margin: auto;
+}
+
+h1:after {
+  content: "NFA TO DFA";
+  position: absolute;
+  left: -3px;
+  top: 2px;
+  color: rgba(153, 0, 0, 1);
+}
