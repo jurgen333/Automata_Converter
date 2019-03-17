@@ -8,10 +8,6 @@ convert.classList.add("invisible");
 states.addEventListener("click", event => {
   event.preventDefault();
   var input = document.getElementById("input");
-  // var NFAcontainer = document.getElementById("NFA");
-  // var DFAcontainer = document.getElementById("DFA");
-  // NFAcontainer.innerHTML = "";
-  // DFAcontainer.innerHTML = "";
   input.innerHTML = "";
 
   var table = document.createElement("table");
@@ -146,28 +142,6 @@ function closure(i, nfaST, temp) {
   }
 }
 
-function eNFAtoDFA(NFAtable) {
-  var nodes = [];
-  var temp = [];
-  closure(0, NFAtable, temp);
-  var ans = "";
-  ans = temp[0];
-  for (let i = 1; i < temp.length; i++) ans = ans + " " + temp[i];
-  ans = MyUnion(ans);
-  nodes.push(ans);
-  var DFAtable = [];
-
-  var index = 0;
-  while (1) {
-    helper(nodes[index], NFAtable, DFAtable, nodes);
-
-    if (index == nodes.length - 1) break;
-    else index++;
-  }
-  console.log("FROM", NFAtable);
-  displayResult(DFAtable, nodes);
-}
-
 function MyUnion(ans) {
   if (ans == "") return ans;
   var temp = ans.split(" ");
@@ -208,12 +182,9 @@ function helper(state, NFAtable, DFAtable, nodes) {
   var splitStates = state.split(" ");
   if (splitStates.length == 1) {
     var y = splitStates[0].split("Q")[1];
-    console.log(y);
 
     var temp = [];
     for (var i = 0; i < col; i++) {
-      console.log(NFAtable[y][i]);
-
       var transitionState = NFAtable[y][i];
       transitionState = MyUnion(transitionState);
       if (!find(transitionState, nodes) && transitionState != "") {
@@ -223,16 +194,13 @@ function helper(state, NFAtable, DFAtable, nodes) {
     }
     DFAtable.push(temp);
   } else {
-    // console.log();
-
     var temp = [];
-    console.log("SLIP", splitStates);
+    console.log("Split", splitStates);
     for (var i = 0; i < col; i++) {
       var ans = "";
 
       for (var j = 0; j < splitStates.length; j++) {
         var y = splitStates[j].charAt(1);
-        console.log(y, "Y");
 
         if (y != "") {
           if (ans != "" && NFAtable[y][i] != "")
@@ -249,23 +217,16 @@ function helper(state, NFAtable, DFAtable, nodes) {
 }
 
 function NFAtoDFA(NFAtable) {
-  console.log(NFAtable);
-
   var nodes = [];
   var DFAtable = [];
   if (NFAtable) nodes.push("Q0");
   var index = 0;
   while (1) {
-    console.log(nodes);
-
     helper(nodes[index], NFAtable, DFAtable, nodes);
     if (index == nodes.length - 1) break;
     else index++;
   }
-  console.log(DFAtable);
-  console.log("noded", nodes);
-
-  displayResult(DFAtable, nodes);
+  displayDfa(DFAtable, nodes);
 }
 
 function search(obj, x) {
@@ -275,7 +236,7 @@ function search(obj, x) {
   return -1;
 }
 
-function displayResult(dfaTable, dfaStates) {
+function displayDfa(dfaTable, dfaStates) {
   if (b === true) {
     m = m - 1;
   }
@@ -313,19 +274,24 @@ function displayResult(dfaTable, dfaStates) {
     }
 
     for (let j = 0; j < m; j++) {
-      tr = tr + `<td> ${dfaTable[i][j]}</td>`;
+      if (dfaTable[i][j] === "") {
+        tr = tr + `<td> Error State</td>`;
+      } else {
+        tr = tr + `<td> ${dfaTable[i][j]}</td>`;
+      }
     }
     tr = tr + "</tr>";
   }
   table.innerHTML = tr;
+  var div = document.createElement("div");
+  div.innerHTML = "<h2>Dfa Table:</h2>";
   var small = document.createElement("small");
   small.innerHTML =
     "Initial state is first row and red states are final states";
-  container.appendChild(small);
+  div.appendChild(small);
+  container.appendChild(div);
   container.appendChild(table);
 }
-// convertToNfa(nfaST);
-
 function convertToNfa(epsilonNfa) {
   var nfaTable = [];
   for (let i = 0; i < epsilonNfa.length; i++) {
@@ -342,7 +308,56 @@ function convertToNfa(epsilonNfa) {
     nfaTable.push(temp);
   }
   console.log("end", nfaTable);
+  displayNFA(nfaTable);
   return nfaTable;
+}
+function displayNFA(nfaTable) {
+  let container = document.getElementById("newTab");
+  let table = document.createElement("table");
+
+  table.classList.add("table");
+  table.classList.add("table-bordered");
+  table.classList.add("table-hover");
+  table.classList.add("table-sm");
+  table.classList.add("table-light");
+
+  var tr = '<thead class="thead"> <tr>';
+  tr = tr + `<th scope="col">Q \ E</th>`;
+
+  for (let i = 0; i < m - 1; i++) {
+    tr = tr + `<th scope="col">${i}</th>`;
+  }
+
+  tr = tr + "</tr> </thead>";
+  tr = tr + "<tbody>";
+
+  for (let i = 0; i < n; i++) {
+    tr = tr + "<tr>";
+
+    if (finals.indexOf(`Q${i}`) !== -1) {
+      tr = tr + `<td class="finals"><strong>Q${i}<strong></td>`;
+    } else {
+      tr = tr + `<td><strong>Q${i}<strong></td>`;
+    }
+
+    for (let j = 0; j < m - 1; j++) {
+      if (nfaTable[i][j] === "") {
+        tr = tr + `<td> &#1060</td>`;
+      } else {
+        tr = tr + `<td> ${nfaTable[i][j]}</td>`;
+      }
+    }
+    tr = tr + "</tr>";
+  }
+  table.innerHTML = tr;
+  var div = document.createElement("div");
+  div.innerHTML = "<h2>NFA Table:</h2>";
+  var small = document.createElement("small");
+  small.innerHTML =
+    "Initial state is first row and red states are final states";
+  div.appendChild(small);
+  container.appendChild(div);
+  container.appendChild(table);
 }
 
 function getClosure(states, letter) {
