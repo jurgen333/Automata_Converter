@@ -1,8 +1,8 @@
 var states = document.getElementById("states");
-var n, m, b;
-var nfaST = []; // this is state transition table for nfa
-var I, F;
 var convert = document.getElementById("convert");
+var n, m, b; //numb of states , alphabet and isEpsilonNfa
+var nfaST = []; // stateTransition Table
+var I, F; //initial and final states input
 convert.classList.add("invisible");
 
 states.addEventListener("click", event => {
@@ -127,21 +127,6 @@ function valid(NFA) {
   return true;
 }
 
-function closure(i, nfaST, temp) {
-  var s = "Q" + i;
-  if (temp.indexOf(s) != -1) return;
-  temp.push(s);
-  if (nfaST[i][m - 1] != "") {
-    var splitStates = nfaST[i][m - 1].split(" ");
-    for (let i = 0; i < splitStates.length; i++) {
-      var y = splitStates[i].split("Q")[1];
-      if (temp.indexOf(splitStates[i]) === -1) {
-        closure(y, nfaST, temp);
-      }
-    }
-  }
-}
-
 function MyUnion(ans) {
   if (ans == "") return ans;
   var temp = ans.split(" ");
@@ -219,7 +204,7 @@ function helper(state, NFAtable, DFAtable, nodes) {
 function NFAtoDFA(NFAtable) {
   var nodes = [];
   var DFAtable = [];
-  if (NFAtable) nodes.push("Q0");
+  if (NFAtable) nodes.push(I);
   var index = 0;
   while (1) {
     helper(nodes[index], NFAtable, DFAtable, nodes);
@@ -227,13 +212,6 @@ function NFAtoDFA(NFAtable) {
     else index++;
   }
   displayDfa(DFAtable, nodes);
-}
-
-function search(obj, x) {
-  for (let i = 0; i < x.length; i++) {
-    if (obj.from == x[i].from && obj.to == x[i].to) return i;
-  }
-  return -1;
 }
 
 function displayDfa(dfaTable, dfaStates) {

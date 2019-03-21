@@ -14,10 +14,6 @@ col {
   height: 100%;
 }
 
-/* container-fluis {
-  height: 100%;
-} */
-
 #heading {
   width: 100%;
   margin: auto;
@@ -35,12 +31,4 @@ h1 {
   color: rgba(160, 160, 160, 1);
   text-align: center;
   margin: auto;
-}
-
-h1:after {
-  content: "NFA TO DFA";
-  position: absolute;
-  left: -3px;
-  top: 2px;
-  color: rgba(153, 0, 0, 1);
 }
